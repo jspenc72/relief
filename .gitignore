@@ -1,5 +1,0 @@
-.*
-*.conf
-!/.gitignore
-node_modules
-dist/*
