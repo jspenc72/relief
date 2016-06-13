@@ -9,12 +9,11 @@ git clone https://github.com/ninayanez/imageToStl.git
 #### To Build:
 ```
 cd imageToStl 
-make
 npm install
+make
 ```
 
 #### Usage:
 ```
-make stl /path/to/image/file
+./image2stl /path/to/image/file
 ```
-
