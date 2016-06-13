@@ -10,6 +10,7 @@ git clone https://github.com/ninayanez/imageToStl.git
 ```
 cd imageToStl 
 make
+npm install
 ```
 
 #### Usage:
