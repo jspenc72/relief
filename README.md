@@ -1,12 +1,12 @@
 #### Dependencies:
 nodejs LTS v5.10.0
 
-#### To Install:
+#### Installation:
 ```
 git clone https://github.com/ninayanez/imageToStl.git
 ```
 
-#### To Build:
+#### Building:
 ```
 cd imageToStl 
 npm install
