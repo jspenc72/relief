@@ -1,6 +1,6 @@
 build:
 	mkdir -p dist
-	node_modules/.bin/babel lib --out-dir dist
+	node_modules/.bin/babel src --out-dir dist
 
 deps:
 	npm i
