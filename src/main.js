@@ -1,38 +1,57 @@
-import electron from 'electron'
-import _ from 'underscore'
-import yaml from 'yamljs'
-const ipc = electron.ipcRenderer
+const electron = require('electron')
+// Module to control application life.
+const app = electron.app
+// Module to create native browser window.
+const BrowserWindow = electron.BrowserWindow
 
+const path = require('path')
+const url = require('url')
 
-const printer = yaml.load(__dirname+'/default.yml')
-const w =  printer.width/ printer.line
-const h =  printer.height/printer.line
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let mainWindow
 
-const view = document.createElement('div')
-view.id = 'viewport'
-view.style.width = parseInt(w)+'px'
-view.style.height = parseInt(h)+'px'
-view.style.marginLeft = -parseInt(w/2)+'px'
-view.style.marginTop = -(parseInt(h/2)+10)+'px'
-document.body.appendChild(view)
-document.addEventListener('dragover', (e) => {e.preventDefault()}, false)
-document.addEventListener('drop', (e) => { 
-  e.preventDefault()
-	if (e.dataTransfer.files.length === 1) {
-    const file = e.dataTransfer.files[0]
-    ipc.send('data', {file:file.path, preview:true})
-	}
-	else return false
-},false)
+function createWindow () {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({width: 800, height: 600})
 
+  // and load the index.html of the app.
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
 
-ipc.on('data', (event, d) => {
-  if (!d.preview) { console.log(false); return }
-  const img = document.createElement('img')
-  img.src = d.preview
-  img.onload = (e) => {
-    img.style.marginLeft = -parseInt(img.width/2)+'px'
-    img.style.marginTop = -(parseInt(img.height/2))+'px'
-    document.body.appendChild(img)
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools()
+
+  // Emitted when the window is closed.
+  mainWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null
+  })
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', createWindow)
+
+// Quit when all windows are closed.
+app.on('window-all-closed', function () {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
+app.on('activate', function () {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (mainWindow === null) {
+    createWindow()
   }
 })

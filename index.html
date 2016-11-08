@@ -1,8 +1,29 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #viewport {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        border: 2px solid blue;
+        background: 'transparent';
+        z-index: 999;
+      }
+      img {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+      }
+    </style>
     <meta charset="UTF-8">
     <title>print a plate</title>
   </head>
-  <script>require('./main.js')</script>
+  <body>
+    <script>require('./dist/renderer.js')</script>
+  </body>
 </html>
