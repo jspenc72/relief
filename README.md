@@ -1,19 +1,21 @@
-#### Dependencies:
-nodejs LTS v5.10.0
-
 #### Installation:
 ```
-git clone https://github.com/ninayanez/imageToStl.git
+git clone https://github.com/wepress/print-a-plate.git
 ```
 
-#### Building:
+#### Build:
 ```
-cd imageToStl 
+cd print-a-plate 
 npm install
-make
+make all
 ```
 
-#### Usage:
+#### Run:
 ```
-./image2stl /path/to/image/file
+make run
 ```
+or (on macOS)
+```
+make package 
+```
+and open print-a-plate.app
