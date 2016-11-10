@@ -1,6 +1,6 @@
 {
-  "name": "imageToStl",
-  "productName": "print a plate",
+  "name": "relief",
+  "productName": "relief",
   "version": "1.0.1",
   "description": "Converts halftone images to stl files for letterpess.",
   "main": "dist/main.js",
