@@ -71,7 +71,6 @@ function processImage (opts, output) {
     for(let x = 0; x < w; x++) { // clumsy check first row for bw
       const val = pixels.data[((w*0)+x)*4]
       if (val !== 0 || val !== 255) {
-        console.log('COLOR')
         pixels.data = floydDither(pixels).data
         const file = fs.createWriteStream(bwPath)
         savePixels(pixels, ext.replace('.','')).pipe(file)
@@ -107,7 +106,7 @@ function pixelsToGeometry (opts, output) {
   baseGeo.center()
 
   for(let y = 0; y < h; y++) { // y row
-    output.write(y+'/'+(h-1))
+    output.write({prog: [y, h-1]})
     for(let x = 0; x < w; x++) { // x across y
       const val = pixArray[((w*y)+x)*4]
       const sides = { // find connected pixels
