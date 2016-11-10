@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import THREE from 'three'
 import through from 'through2'
 
@@ -42,10 +43,14 @@ export default function (object, output) {
         }
 
         s.write('\t\tendloop\n\tendfacet\n')
-        output.write(i+'/'+(faces.length-1)+'\n')
+        output.write({prog: [i, faces.length-1]})
       }
     }
     s.write('endsolid exported\n')
+    output.write({
+      status: 'exported STL to: '+ object.name, 
+      exec: 'open '+ path.dirname(object.name)
+    })
     s.end()
   }
 }
