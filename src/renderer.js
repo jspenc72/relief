@@ -7,6 +7,7 @@ const ipc = electron.ipcRenderer
 const printer = yaml.load(__dirname+'/default.yml')
 const w =  printer.width/ printer.line
 const h =  printer.height/printer.line
+let img = null
 
 const view = document.createElement('div')
 view.id = 'viewport'
@@ -28,7 +29,7 @@ document.addEventListener('drop', (e) => {
 
 ipc.on('data', (event, d) => {
   if (!d.preview) { console.log(false); return }
-  const img = document.createElement('img')
+  if (!img) img = document.createElement('img')
   img.src = d.preview
   img.onload = (e) => {
     img.style.marginLeft = -parseInt(img.width/2)+'px'
