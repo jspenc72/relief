@@ -46,11 +46,10 @@ export default function (object, output) {
         output.write({prog: [i, faces.length-1]})
       }
     }
-    s.write('endsolid exported\n')
     output.write({
       status: 'exported STL to: '+ object.name, 
       exec: 'open '+ path.dirname(object.name)
     })
-    s.end()
+    s.end('endsolid exported\n')
   }
 }
