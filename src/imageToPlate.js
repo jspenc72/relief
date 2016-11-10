@@ -83,7 +83,7 @@ function processImage (opts, output) {
       const file = fs.createWriteStream(bwPath)
       savePixels(pixels, ext.replace('.','')).pipe(file)
       file.on('close', () => {
-        output.write({preview: bwPath})
+        output.write('preview '+bwPath)
         pixelsToGeometry(packagedPixels, output)
       })
     } else pixelsToGeometry(packagedPixels, output)
@@ -105,7 +105,7 @@ function pixelsToGeometry (opts, output) {
   baseGeo.center()
 
   for(let y = 0; y < h; y++) { // y row
-    output.write({prog: [y, h-1]})
+    output.write('prog '+y+' '+h-1)
     for(let x = 0; x < w; x++) { // x across y
       const val = pixArray[((w*y)+x)*4]
       const sides = { // find connected pixels
