@@ -10,9 +10,7 @@ let mainWindow
 
 ipc.on('data', function (event, data) {
   if (data.file) imageToPlate(data, (s) => {
-    s.on('data', (d) => {
-      if (d.preview) event.sender.send('data', d)
-    })
+    s.on('data', (d) => { event.sender.send('data', d) })
   })
 })
 
