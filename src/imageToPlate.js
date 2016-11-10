@@ -59,35 +59,34 @@ export default function (opts, cb) {
 
 
 function processImage (opts, output) {
+  let color = false
   const ext = path.extname(opts.file)
   const bwPath = opts.file.replace(ext, '_bw' + ext)
   const stlPath = opts.file.replace(ext, '.stl')
   getPixels(opts.file, (e, pixels) => { 
     const w = pixels.shape[0]
     const h = pixels.shape[1]
+    const packagedPixels = {
+      width : w, height: w, data: pixels.data, stlFileName: stlPath
+    }
 
     output.write({preview: opts.file})
 
     for(let x = 0; x < w; x++) { // clumsy check first row for bw
       const val = pixels.data[((w*0)+x)*4]
-      if (val !== 0 || val !== 255) {
-        pixels.data = floydDither(pixels).data
-        const file = fs.createWriteStream(bwPath)
-        savePixels(pixels, ext.replace('.','')).pipe(file)
-        file.on('close', () => {
-          console.log('done')
-          output.write({preview: bwPath})
-        })
-        break;
-      }
+      if (val !== 0 || val !== 255) { color = true; break }
     }
 
-    pixelsToGeometry({
-      width: w,
-      height: h,
-      data: pixels.data,
-      stlFileName: stlPath
-    }, output)
+    if (color) {
+      pixels.data = floydDither(pixels).data
+      packagedPixels.data = pixels.data
+      const file = fs.createWriteStream(bwPath)
+      savePixels(pixels, ext.replace('.','')).pipe(file)
+      file.on('close', () => {
+        output.write({preview: bwPath})
+        pixelsToGeometry(packagedPixels, output)
+      })
+    } else pixelsToGeometry(packagedPixels, output)
   })
 }
 
