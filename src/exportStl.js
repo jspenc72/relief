@@ -15,7 +15,9 @@ export default function (object, output) {
     console.error(e)
   })
 
-  file.on('end', () => { output.write('exported') })
+  file.on('close', () => {
+    output.write('exec open ' + path.dirname(object.name))
+  })
 
   if (object instanceof THREE.Mesh) {
     const geometry = object.geometry
@@ -42,14 +44,10 @@ export default function (object, output) {
           s.write('\t\t\tvertex '+vector.x+' '+vector.y+' '+vector.z+'\n')
         }
 
+        output.write('prog '+i+' '+faces.length-1)
         s.write('\t\tendloop\n\tendfacet\n')
-        output.write({prog: [i, faces.length-1]})
       }
     }
-    output.write({
-      status: 'exported STL to: '+ object.name, 
-      exec: 'open '+ path.dirname(object.name)
-    })
     s.end('endsolid exported\n')
   }
 }
