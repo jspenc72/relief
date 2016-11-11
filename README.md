@@ -14,7 +14,7 @@ $: make all
 $: make run
 ```
 
-#### or compile for macOS:
+#### or compile as a mac app:
 ```
-$: make app 
+$: make app
 ```
