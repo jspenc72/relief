@@ -6,11 +6,12 @@ build js:
 	node_modules/.bin/babel src --out-dir dist
 
 all:
+	npm install
 	make rebuild
 	make build js
  
 package:
-	node_modules/.bin/electron-packager . printa-a-plate --arch x64 --platform darwin
+	node_modules/.bin/electron-packager . relief --arch x64 --platform darwin 
 
 run:
 	node_modules/.bin/electron .
