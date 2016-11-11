@@ -11,12 +11,14 @@ export default function (object, output) {
 
   s.pipe(file)
 
+  s.write('solid\n')
+
   file.on('error', (e) => {
     console.error(e)
   })
 
   file.on('close', () => {
-    output.write('exec open ' + path.dirname(object.name))
+    output({open:object.name})
   })
 
   if (object instanceof THREE.Mesh) {
@@ -44,10 +46,10 @@ export default function (object, output) {
           s.write('\t\t\tvertex '+vector.x+' '+vector.y+' '+vector.z+'\n')
         }
 
-        output.write('prog '+i+' '+faces.length-1)
+        // output('prog '+i+' '+faces.length)
         s.write('\t\tendloop\n\tendfacet\n')
       }
     }
-    s.end('endsolid exported\n')
+    s.end('endsolid')
   }
 }
