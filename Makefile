@@ -10,7 +10,7 @@ all:
 	make rebuild
 	make build js
  
-package:
+app:
 	node_modules/.bin/electron-packager . relief --arch x64 --platform darwin 
 
 run:
