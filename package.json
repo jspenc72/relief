@@ -2,7 +2,7 @@
   "name": "relief",
   "productName": "relief",
   "version": "1.0.1",
-  "description": "Converts halftone images to stl files for letterpess.",
+  "description": "Use digital images (jpg, png) to make 3D printed relief plates for letterpress or block printing!",
   "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,10 +10,8 @@
   "author": "nina yañez",
   "license": "ISC",
   "dependencies": {
-    "babel": "5.8.29",
     "floyd-steinberg": "^1.0.4",
     "get-pixels": "^3.3.0",
-    "save-pixels": "^2.3.4",
     "sharp": "^0.16.2",
     "three": "^0.77.1",
     "through2": "^2.0.1",
@@ -21,6 +19,7 @@
     "yamljs": "^0.2.8"
   },
   "devDependencies": {
+    "babel": "5.8.29",
     "electron": "^1.4.5",
     "electron-packager": "^8.2.0",
     "electron-rebuild": "^1.3.0"
