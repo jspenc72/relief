@@ -5,19 +5,19 @@ import _ from 'underscore'
 import THREE from 'three'
 import exportStl from './exportStl.js'
 import floydDither from 'floyd-steinberg'
-import savePixels from 'save-pixels'
 import getPixels from 'get-pixels'
 import sharp from 'sharp'
 import yaml from 'yamljs'
 
 
 const printer = yaml.load(__dirname+'/default.yml')
-const printable = new THREE.Geometry()
+let printable = false
 const pixelGeo = new THREE.CubeGeometry(
   printer.line, 
   printer.line, 
   printer.line
 )
+
 const map = { // front : 8,9 & back : 10,11
   right : 0, // faces 0,1
   left : 2, // faces 2,3
@@ -37,15 +37,14 @@ function pixelBounds (bed) {
 
 
 export default function (opts, output) {
+  printable = new THREE.Geometry()
   const fileName = path.basename(opts.file)
   const dirName = path.dirname(opts.file)
 
   const prePix = sharp(opts.file) // check img dim and scale to fit printer
   prePix.metadata((e, info) => {
     const bounds = pixelBounds(printer)
-
-    output('processing '+opts.file)
-
+    output({log:'processing '+opts.file})
     if (info.height>bounds.h || info.width>bounds.w) {
       opts.file = dirName+'/sm_'+fileName
       if (info.width>info.height) prePix.resize(bounds.w, null)
@@ -63,7 +62,7 @@ function processImage (opts, output) {
   let color = false
   const ext = path.extname(opts.file)
   const bwPath = opts.file.replace(ext, '_bw' + ext)
-  const stlPath = opts.file.replace(ext, '.stl')
+  const stlPath = opts.file.replace('sm_','').replace(ext, '.stl')
   getPixels(opts.file, (e, pixels) => { 
     const w = pixels.shape[0]
     const h = pixels.shape[1]
@@ -79,16 +78,14 @@ function processImage (opts, output) {
     if (color) {
       pixels.data = floydDither(pixels).data
       packagedPixels.data = pixels.data
-      const file = fs.createWriteStream(bwPath)
-      savePixels(pixels, ext.replace('.','')).pipe(file)
-      file.on('close', () => {
-        output('preview '+bwPath)
-        pixelsToGeometry(packagedPixels, output)
-      })
-    } else {
-      output('preview '+opts.file)
-      pixelsToGeometry(packagedPixels, output)
     }
+
+    output({preview:pixels})
+    output({log:'|･ω･)ﾉ making 3D plate from image pixels...'})
+
+    setTimeout(() => {
+      pixelsToGeometry(packagedPixels, output) 
+    }, 80)
   })
 }
 
@@ -106,7 +103,6 @@ function pixelsToGeometry (opts, output) {
   )
   baseGeo.center()
 
-  output('Creating STL from image pixel data...')
 
   for(let y = 0; y < h; y++) { // y row
     for(let x = 0; x < w; x++) { // x across y
@@ -132,6 +128,7 @@ function pixelsToGeometry (opts, output) {
 
   const model = new THREE.Mesh(printable)
   model.name = opts.stlFileName
+  output({log: 'exporting STL file...'})
   exportStl(model, output)
 }
 
