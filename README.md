@@ -1,6 +1,6 @@
 relief is a simple program that lets you drop in images and get back 3D printable STL plates for letterpress and block printmaking.
 
-**Download (for mac) at [wepress.ca/relief.zip](https://wepress.ca/relief.zip)**
+**Download (for mac) [wepress.ca/relief.zip](https://wepress.ca/relief.zip)**
 
 #### or if you want you can build from source:
 ```
