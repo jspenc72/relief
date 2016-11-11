@@ -1,39 +1,38 @@
 import electron from 'electron'
 import _ from 'underscore'
 import yaml from 'yamljs'
-const ipc = electron.ipcRenderer
+import imageToPlate from './imageToPlate.js'
+import proc from 'child_process'
 
-
-const printer = yaml.load(__dirname+'/default.yml')
-const w =  printer.width/ printer.line
-const h =  printer.height/printer.line
+// const ipc = electron.ipcRenderer
 let img = null
+let scale = null
 
-const view = document.createElement('div')
-view.id = 'viewport'
-view.style.width = parseInt(w)+'px'
-view.style.height = parseInt(h)+'px'
-view.style.marginLeft = -parseInt(w/2)+'px'
-view.style.marginTop = -(parseInt(h/2)+10)+'px'
-document.body.appendChild(view)
+  
+const log = document.querySelector('.log')
 document.addEventListener('dragover', (e) => {e.preventDefault()}, false)
 document.addEventListener('drop', (e) => { 
   e.preventDefault()
 	if (e.dataTransfer.files.length === 1) {
     const file = e.dataTransfer.files[0]
-    ipc.send('data', {file:file.path, preview:true})
+    imageToPlate({file:file.path}, inputHandler)
 	}
 	else return false
 },false)
 
-
-ipc.on('data', (event, d) => {
-  if (!d.preview) { console.log(false); return }
-  if (!img) img = document.createElement('img')
-  img.src = d.preview
-  img.onload = (e) => {
-    img.style.marginLeft = -parseInt(img.width/2)+'px'
-    img.style.marginTop = -(parseInt(img.height/2))+'px'
-    document.body.appendChild(img)
+function inputHandler (d) {
+  d = d.split(' ')
+  if (d[0] === 'prog') return
+  if (d[0] === 'open') { 
+    proc.exec(d[1]+' '+d[2], (e,se,so) => { console.log(e,se,so) })
   }
-})
+  if (d[0] === 'preview') {
+    if (!img) img = document.createElement('img')
+    img.src = d[1]
+    img.onload = (e) => {
+      img.style.marginLeft = -parseInt(img.width/2)+'px'
+      img.style.marginTop = -(parseInt(img.height/2))+'px'
+      document.body.appendChild(img)
+    }
+  } else log.innerHTML = d[1]
+}

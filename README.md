@@ -1,21 +1,18 @@
-#### Installation:
+relief is a simple program that lets you drop in images and get back 3D printable STL plates for letterpress and block printmaking.
+
+#### Building from source:
 ```
-git clone https://github.com/wepress/print-a-plate.git
+$: git clone https://github.com/wepress/relief.git
+$: cd relief
+$: make all
 ```
 
-#### Build:
+#### Running with Electron:
 ```
-cd print-a-plate 
-npm install
-make all
+$: make run
 ```
 
-#### Run:
+#### Compiling as .app for macOS:
 ```
-make run
+$: make package 
 ```
-or (on macOS)
-```
-make package 
-```
-and open print-a-plate.app

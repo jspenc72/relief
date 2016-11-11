@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import through from 'through'
+import through from 'through2'
 import _ from 'underscore'
 import THREE from 'three'
 import exportStl from './exportStl.js'
@@ -36,15 +36,16 @@ function pixelBounds (bed) {
 }
 
 
-export default function (opts, cb) {
+export default function (opts, output) {
   const fileName = path.basename(opts.file)
   const dirName = path.dirname(opts.file)
-  const output = through()
-  cb(output)
 
   const prePix = sharp(opts.file) // check img dim and scale to fit printer
   prePix.metadata((e, info) => {
     const bounds = pixelBounds(printer)
+
+    output('processing '+opts.file)
+
     if (info.height>bounds.h || info.width>bounds.w) {
       opts.file = dirName+'/sm_'+fileName
       if (info.width>info.height) prePix.resize(bounds.w, null)
@@ -67,10 +68,8 @@ function processImage (opts, output) {
     const w = pixels.shape[0]
     const h = pixels.shape[1]
     const packagedPixels = {
-      width : w, height: w, data: pixels.data, stlFileName: stlPath
+      width : w, height: h, data: pixels.data, stlFileName: stlPath
     }
-
-    output.write({preview: opts.file})
 
     for(let x = 0; x < w; x++) { // clumsy check first row for bw
       const val = pixels.data[((w*0)+x)*4]
@@ -83,10 +82,13 @@ function processImage (opts, output) {
       const file = fs.createWriteStream(bwPath)
       savePixels(pixels, ext.replace('.','')).pipe(file)
       file.on('close', () => {
-        output.write('preview '+bwPath)
+        output('preview '+bwPath)
         pixelsToGeometry(packagedPixels, output)
       })
-    } else pixelsToGeometry(packagedPixels, output)
+    } else {
+      output('preview '+opts.file)
+      pixelsToGeometry(packagedPixels, output)
+    }
   })
 }
 
@@ -104,8 +106,9 @@ function pixelsToGeometry (opts, output) {
   )
   baseGeo.center()
 
+  output('Creating STL from image pixel data...')
+
   for(let y = 0; y < h; y++) { // y row
-    output.write('prog '+y+' '+h-1)
     for(let x = 0; x < w; x++) { // x across y
       const val = pixArray[((w*y)+x)*4]
       const sides = { // find connected pixels
